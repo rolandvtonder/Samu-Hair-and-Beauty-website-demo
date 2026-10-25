@@ -1,0 +1,377 @@
+@import "tailwindcss";
+
+/*
+  Samu's Hair & Beauty.
+
+  Marlin's palette discipline, re-keyed to the brand: a warm near-black with a
+  plum cast instead of Marlin's blue-black, and the logo's magenta as the one
+  accent, used for the mark, the booking action and the active index only.
+  Blush is not a second accent; it is the italic word in each headline, a
+  quieter tint of the same hue.
+
+  Type swaps Marlin's wide grotesque for an editorial serif. Playfair Display
+  carries the headlines (with its italic doing the emphasis), Manrope stays
+  as the text face exactly as in Marlin.
+
+  Magenta #e8459f on ink #0e0a0d is 5.4:1, so it holds as text and as a
+  button fill under ink-coloured type.
+*/
+@theme {
+  --color-ink: #0e0a0d;
+  --color-plum: #171015;
+  --color-magenta: #e8459f;
+  --color-blush: #f5b9d6;
+
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-sans: "Manrope", system-ui, sans-serif;
+}
+
+html, body, #root { margin: 0; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  background: var(--color-ink);
+  color: #fff;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-magenta);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+  color: #fff;
+}
+
+.label {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ---- navbar ---- */
+.site-nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 22px 40px 44px;
+  /* A gradient rather than a bar, as in Marlin: a solid fill draws a hard
+     seam across the photographs. The same gradient masks the blur. */
+  background: linear-gradient(180deg, rgba(14, 10, 13, 0.82) 0%, rgba(14, 10, 13, 0.45) 50%, rgba(14, 10, 13, 0) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  mask-image: linear-gradient(180deg, #000 0%, #000 50%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 50%, transparent 100%);
+  pointer-events: none;
+}
+.site-nav > * { pointer-events: auto; }
+
+.nav-links {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+}
+.nav-link {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  padding: 10px 2px;
+  transition: color 200ms;
+}
+.nav-link:hover { color: #fff; }
+.nav-link[aria-current="page"] {
+  color: #fff;
+  box-shadow: inset 0 -2px 0 var(--color-magenta);
+}
+
+.menu-btn {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(14, 10, 13, 0.4);
+  color: #fff;
+  cursor: pointer;
+}
+.menu-icon { position: relative; width: 16px; height: 10px; }
+.menu-icon span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background: currentColor;
+  transition: transform 250ms, top 250ms;
+}
+.menu-icon span:first-child { top: 0; }
+.menu-icon span:last-child { top: 8.5px; }
+.menu-icon.is-open span:first-child { top: 4.25px; transform: rotate(45deg); }
+.menu-icon.is-open span:last-child { top: 4.25px; transform: rotate(-45deg); }
+
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 19;
+  display: flex;
+  flex-direction: column;
+  padding: 120px 24px 40px;
+  overflow-y: auto;
+  background: rgba(14, 10, 13, 0.97);
+}
+.mobile-menu-item { border-top: 1px solid rgba(255, 255, 255, 0.12); animation: rise 500ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.mobile-menu-item a {
+  display: block;
+  padding: 16px 0;
+  font-size: 40px;
+  line-height: 1.1;
+  text-decoration: none;
+}
+.mobile-menu-item a[aria-current="page"] { color: var(--color-blush); font-style: italic; }
+
+/* The navbar is natural size, outside the artboard, so under a phone width
+   the centre links no longer fit; they move into the Menu panel. */
+@media (max-width: 640px) {
+  .site-nav { padding: 16px 20px 36px; justify-content: space-between; }
+  .nav-links { display: none; }
+  .menu-btn { display: inline-flex; }
+}
+@media (min-width: 641px) {
+  .mobile-menu { display: none; }
+}
+
+/* ---- page hero (Services, Gallery, About) ---- */
+.page-hero { position: relative; overflow: hidden; background: var(--color-ink); }
+.page-hero-bg { position: absolute; inset: -8%; }
+.page-hero-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(44px) saturate(1.25) brightness(0.5);
+}
+.page-hero-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(46% 60% at 82% 18%, rgba(232, 69, 159, 0.2) 0%, rgba(232, 69, 159, 0) 70%),
+    linear-gradient(180deg, rgba(14, 10, 13, 0.55) 0%, rgba(14, 10, 13, 0.7) 70%, var(--color-ink) 100%);
+}
+
+.arch {
+  overflow: hidden;
+  aspect-ratio: 4 / 5.4;
+  border-radius: 999px 999px 28px 28px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.75);
+}
+.arch img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* the load-in rise, the page-hero cousin of the home stage's Mask */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+.rise { animation: rise 800ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .rise, .mobile-menu-item { animation: none; }
+}
+
+/* ---- reviews ---- */
+.review-lead {
+  position: relative;
+  margin: 0;
+  padding: 40px 32px 32px;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background:
+    radial-gradient(60% 120% at 100% 0%, rgba(232, 69, 159, 0.14) 0%, rgba(232, 69, 159, 0) 70%),
+    rgba(255, 255, 255, 0.03);
+}
+@media (min-width: 768px) { .review-lead { padding: 56px 64px 44px; } }
+.review-mark {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 96px;
+  line-height: 0.6;
+  height: 40px;
+  color: var(--color-magenta);
+}
+.review-card {
+  height: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 28px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.step-card {
+  padding: 28px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: -60px;
+  z-index: 30;
+  padding: 12px 18px;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--color-ink);
+  font-weight: 700;
+}
+.skip-link:focus { top: 16px; }
+
+/* ---- buttons ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: 999px;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 200ms, border-color 200ms, transform 150ms;
+}
+.btn:active { transform: scale(0.97); }
+.btn-accent { background: var(--color-magenta); color: var(--color-ink); }
+.btn-accent:hover { background: #f062b0; }
+.btn-ghost { border: 1px solid rgba(255, 255, 255, 0.45); color: #fff; }
+.btn-ghost:hover { background: rgba(255, 255, 255, 0.08); border-color: #fff; }
+.btn-sm { min-height: 44px; padding: 0 20px; }
+
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  color: #fff;
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-magenta);
+  transition: color 200ms;
+}
+.text-link:hover { color: var(--color-blush); }
+
+/* ---- stage pieces ---- */
+.glass {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 26px 50px -26px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(18px) saturate(120%);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+}
+
+.tile { display: block; color: #fff; text-decoration: none; }
+.tile-dot {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background-color 200ms, color 200ms;
+}
+.tile:hover .tile-dot { background: var(--color-magenta); border-color: var(--color-magenta); color: var(--color-ink); }
+
+/* ---- flow sections ---- */
+
+
+.gallery-item {
+  overflow: hidden;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+}
+.gallery-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 500ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@media (hover: hover) {
+  .gallery-item:hover img { transform: scale(1.04); }
+}
+
+.about-photo {
+  overflow: hidden;
+  border-radius: 999px 999px 28px 28px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  aspect-ratio: 4 / 5;
+  max-width: 480px;
+}
+.about-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; }
+
+.visit-card {
+  display: block;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  text-decoration: none;
+  transition: border-color 200ms, background-color 200ms;
+}
+.visit-card:hover { border-color: rgba(232, 69, 159, 0.6); background: rgba(232, 69, 159, 0.06); }
+
+.icon-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  transition: background-color 200ms, border-color 200ms;
+}
+.icon-btn:hover { background: rgba(255, 255, 255, 0.08); border-color: #fff; }
+
+.footer-link {
+  display: inline-block;
+  font-size: 14px;
+  line-height: 32px;
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+  transition: color 200ms;
+}
+.footer-link:hover { color: #fff; }
+
+.footer-mark {
+  font-size: clamp(84px, 16vw, 230px);
+  font-style: italic;
+  line-height: 1.1;
+  text-align: center;
+  letter-spacing: -0.03em;
+  background: linear-gradient(180deg, rgba(245, 185, 214, 0.32) 0%, rgba(245, 185, 214, 0.02) 82%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  user-select: none;
+  margin-bottom: -0.12em;
+}

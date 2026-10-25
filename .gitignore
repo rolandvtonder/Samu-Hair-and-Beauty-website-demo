@@ -1,0 +1,11 @@
+node_modules
+dist
+.DS_Store
+
+# raw source material: unrenamed photos and review screenshots (reviewers'
+# full names and profile pictures). The site uses copies in public/assets
+# and the review text in src/site.ts.
+media/
+
+# local editor/preview config
+.claude/
